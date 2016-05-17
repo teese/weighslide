@@ -44,7 +44,7 @@ def run_weighslide(infile, window, statistic, **kwargs):
                     [ 0  1  1 ]
                       [ 1  1  2 ] and so on until the final slice [ 13  21  NaN ]
     Each array slice will be "weighted" by multiplication with the window, array-style, resulting in:
-              [ 0  0  0 ]
+              [ NaN  0  0 ]
                  [ 0  0  2 ]
                     [ 0  5  2 ]
                        [ 2  5  4 ] and so on.
@@ -53,74 +53,70 @@ def run_weighslide(infile, window, statistic, **kwargs):
                  [   0.66  ]
                     [   2.33  ]
                        [  3.66  ] and so on.
+    The "statistic" can be mean, std, or sum.
     The value (in this case the mean) will replace the central position in the output 1D array.
     output = [ 0.00  0.00  0.66  2.33  3.66  6.00  9.66  15.6  25.3  41.0  65.5  ]
     The first and last array slices always contain "not a number" (Nan) values, which are ignored in all calculations.
     The first and last output values therefore do not represent results from true, full-length windows.
 
-    Note that weighslide is not currently optimised for performance, and input arrays must have <10 000 datapoints.
-
     Parameters
     ----------
     infile : string
-        Path to csv or excel file containing dataset
+        Path to csv or excel file containing the data to be analysed.
     window : list or string
         The user-defined window that determines the size of the slices in the array, and the weight of each value in
         the slice. Can be a list of integers or floats (e.g. [2,5,2]). Can also be a string of numbers that will be
-        converted to a list, for example "494" will be converted to [0.5,1.0,0.5]. In all cases, data to be ignored
-        in the window should be annoted with "x", for example [2,"x",2], or "4x4" will be converted to [2,np.nan,2] and
-        [0.5,np.nan,0.5] respectively.
+        converted to a list, for example "494" will be converted to [0.5,1.0,0.5], where 0 gives the lowest weighting
+        (0.1) and 9 giving the heighest weighting (1.0). In all cases, data to be ignored in the window should be
+        annoted with "x", for example [2,"x",2], or "4x4" will be converted to [2,np.nan,2] and [0.5,np.nan,0.5]
+        respectively.
     statistic : string
         Statistical algorithm to be applied to the weighted slice. The options are "mean", "std", or "sum".
 
-    Keyword arguments:
+    Keyword arguments (optional):
     ----------
-    name : string
-
-    column_with_data :
-
-    overwrite :
-
-
-    excel_kwargs :
-
-    csv_kwargs :
-
-    excel_kwargs :
-
-    excel_kwargs :
+    name :  string
+        Short name used to describe sample or experiment. If given, will be included in output filename.
+    column : string
+        In excel or csv input files with headers, this is the column name containing the data to analyse.
+        The default is the first column of the dataset.
+    overwrite : boolean
+        If True, output files with the same name will be overwritten. If False, any existing outputfiles will result
+        in an error.
+    showfig : boolean
+        If True, the output figure will be shown as a popup window, or in IPython/Jupyter.
+        For Ipython/Jupyter it is recommended to precede weighslide with the magic command %matplotlib inline.
+    excel_kwargs : dictionary
+        Keyword arguments necessary for pandas to read the input excel file.
+        E.g. {"sheet_name" : "datasheet", "header" : 0, "skiprows : 3}
+    csv_kwargs : dictionary
+        Keyword arguments necessary for pandas to read the input csv file.
+        E.g. {"delimiter" : ",", "skiprows : 3}
 
     Saved Files and Figures
     -------
-        fig0_single_sample_png : Fitted sigmoidal curve for an individual sample. Contains details regarding the
-            automatic judement as to whether the "data_needs_checking" or whether the data seems okay. Contains curves
-            for original data, and also adjusted datasets (e.g. "fixed upper limit", or in future "outliers removed")
-        EC50_analysis_fig_01 : Scattergram with all data and sigmoidal curves for that experiment.
-            Bar-chart with all calculated EC50 values for that experiment, sample letter only on x-axis.
-        EC50_analysis_fig_02 : Bar-chart with all calculated EC50 values for that experiment,
-            full name on x-axis
-        ofd_EC50_eval_csv : csv
-            Output summary csv file with EC50 values.
-            Comma separation, English numbering system, with values in quotation marks to increase compatibility.
-        ofd_EC50_eval_excel : excel file
-            Output summary excel file with EC50 values
+    All output files are saved in a subfolder based on the input xlsx or csv file:
+    D:\Path\To\Your\Input\File\weighslide_output\
 
-    Returns
-    -------
-    df_eval_values : for development only, returns the dataframe showing the evaluated LD50 values for the experiment.
+    out_csv_statistic : csv
+        Output file after applying weighslide to the input list of numerical values.
+        Consists of a list of values, of the same length as the original input list.
+        Filename will reflect that statistical method used (e.g. YourExperimentName_mean.csv for statistic = "mean")
+    out_csv_slice : csv
+        Shows all slices from the original 1D array/list. Filesize is ~1200 kb for an input list of size 1000.
+    out_csv_mult : csv
+        Shows the values in all slices after multiplication against the window.
+        Filesize is ~1200 kb for an input list of size 1000.
+    out_excelfile : excel (.xlsx)
+        The three output datasets (out_csv_statistic, out_csv_slice, and out_csv_mult) are saved on separate sheets.
+        Due to compression, filesize is efficient, with ~150 kb for an input list of size 1000.
+    out_png : png image
+        Very simple and unannotated figure showing a line graph of the original data, in combination with the output
+        after the sliding window analysis.
 
     Note
     -------
-    Automatically runs the "judge_fit" program, which tries to automatically determine if the data is good,
-    identify problems, and decide whether the EC50 value is accurate.
-    EC50 values where the judge_fit decides that the data is not good will be labeled "data_needs_checking", and
-    excluded from later "run_analysis" scripts, which collect and display the data.
-
-    EC50 values are calculated after fitting the data to a four-parameter sigmoid equation (Hill equation).
-    For details regarding the EC50 calculation and equation, see Wikipedia (https://en.wikipedia.org/wiki/EC50).
-    The EC50 is calculated by finding the dose (x value) at the position halfway between the min and max response.
-    This is calculated by root-finding using the brent equation, which is more reliable than the EC50 parameter
-    in the Hill equation.
+    Weighslide is not currently optimised for performance. Input arrays must have <10 000 datapoints.
     """
     print("Starting weighslide analysis.")
     if infile[-4:] == "xlsx" or infile[-4:] == "xls":
@@ -130,8 +126,11 @@ def run_weighslide(infile, window, statistic, **kwargs):
             df = pd.read_excel(infile)
 
     elif infile[-4:] == ".csv":
-        if "csv_kwargs" in kwargs.keys():
-            df = pd.read_csv(infile, **kwargs["csv_kwargs"])
+        if "csv_kwargs" in kwargs:
+            if kwargs["csv_kwargs"] is not None:
+                df = pd.read_csv(infile, **kwargs["csv_kwargs"])
+            else:
+                df = pd.read_csv(infile)
         else:
             df = pd.read_csv(infile)
     else:
@@ -143,13 +142,13 @@ def run_weighslide(infile, window, statistic, **kwargs):
         data_series = df.iloc[:,0]
     # if the dataframe has multiple columns,
     elif df.shape[1] > 1:
-        if "column_with_data" in kwargs.keys() and kwargs["column_with_data"] is not None:
-            column_with_data = kwargs["column_with_data"]
+        if "column" in kwargs.keys() and kwargs["column"] is not None:
+            column = kwargs["column"]
             # select data column
-            data_series = df[column_with_data]
+            data_series = df[column]
         else:
             raise ValueError(r'No column name provided. The input file "{}" appears to have multiple columns, and '
-                             r'therefore the column name with data needs to be input as a column_with_data '
+                             r'therefore the column name with data needs to be input as a column '
                              r'variable.'.format(infile))
     else:
         raise ValueError("Input data not found. Imported {o} file {b} has {c} columns".format(a=infile[-4:],
@@ -180,7 +179,7 @@ def run_weighslide(infile, window, statistic, **kwargs):
     out_excelfile = out_basename + ".xlsx"
     out_csv_slice = out_basename + "_sliced" + ".csv"
     out_csv_mult = out_basename + "_mult" + ".csv"
-    out_csv_series = out_basename + "_{}".format(statistic) + ".csv"
+    out_csv_statistic = out_basename + "_{}".format(statistic) + ".csv"
     out_png = out_basename + ".png"
 
     if "overwrite" in kwargs.keys():
@@ -188,18 +187,19 @@ def run_weighslide(infile, window, statistic, **kwargs):
     else:
         overwrite = False
 
-    list_check_if_existing = [out_excelfile, out_csv_slice, out_csv_mult, out_csv_series, out_png]
+    list_check_if_existing = [out_excelfile, out_csv_slice, out_csv_mult, out_csv_statistic, out_png]
     for filepath in list_check_if_existing:
         if os.path.exists(filepath):
             if not overwrite:
                 raise FileExistsError('\nOutput files already exist. To overwrite files, please change the'
                                       ' "overwrite" variable to True.')
 
-    window_array, df_orig_sliced, df_multiplied, output_series = calculate_weighted_windows(data_series, window, statistic)
+    window_array, df_orig_sliced, df_multiplied, output_series = calculate_weighted_windows(data_series,
+                                                                                            window, statistic)
 
     df_orig_sliced.to_csv(out_csv_slice)
     df_multiplied.to_csv(out_csv_mult)
-    output_series.to_csv(out_csv_series)
+    output_series.to_csv(out_csv_statistic)
 
     # print dot showing progress
     sys.stdout.write(".")
@@ -242,6 +242,37 @@ def run_weighslide(infile, window, statistic, **kwargs):
     print("\nWeighslide analysis is finished.\nLocation of output files:\n\t{}".format(outpath))
 
 def calculate_weighted_windows(data_series, window, statistic):
+    """ Apply the weighslide algorithm to an input series.
+
+    Parameters
+    ----------
+    data_series : pd.Series
+        1D array of input data to which the weighslide algorithm will be applied.
+    window : list or string
+        The user-defined window that determines the size of the slices in the array, and the weight of each value in
+        the slice. Can be a list of integers or floats (e.g. [2,5,2]). Can also be a string of numbers that will be
+        converted to a list, for example "494" will be converted to [0.5,1.0,0.5], where 0 gives the lowest weighting
+        (0.1) and 9 giving the heighest weighting (1.0). In all cases, data to be ignored in the window should be
+        annoted with "x", for example [2,"x",2], or "4x4" will be converted to [2,np.nan,2] and [0.5,np.nan,0.5]
+        respectively.
+    statistic : string
+        Statistical algorithm to be applied to the weighted slice. The options are "mean", "std", or "sum".
+
+    Returns
+    -------
+    window_array : np.ndarray
+        The window in numpy array format, as it is applied to the input data slices.
+    df_orig_sliced : pd.DataFrame
+        Pandas Dataframe containing each slice of the original data, before applying to the window_array and calculation
+        of mean, etc. Effectively a 2D array of slices, so that the user can double-check the slice algorithm.
+    df_multiplied : pd.DataFrame
+        Pandas Dataframe containing each slice of the original data, after applying to the window_array.
+        Effectively a 2D array of slices, so that the user can double-check the slice+window algorithm.
+    output_series : pd.Series
+        Pandas Series containing the output data. This is the result after slicing, applying the window, and applying a
+        statistic (mean, std or sum). The series indexb is the range of the original data. The dtype is float.
+    """
+
     data_series.name = "original data"
 
     if type(window) == str:
@@ -382,13 +413,14 @@ parser.add_argument("-c", #"--column",
                     default=None,
                     help='Column name in input file that should be used for analysis. E.g. "data values"')
 parser.add_argument("-o",  # "--overwrite",
+                    type=str, default="False",
                     help='If True, existing files will be overwritten.')
 parser.add_argument("-e", #"--excel_kwargs",
                     default="None",
                     help="Keyword arguments in python dictionary format to be used when opening "
                          "an excel file using the python pandas module. (E.g. {'sheet_name':'orig_data'}")
 parser.add_argument("-k", #"--csv_kwargs",
-                    default="None",
+                    default=None,
                     help="Keyword arguments in python dictionary format to be used when opening "
                          "your csv file using the python pandas module. (E.g. {'delimeter':',','header'='infer'}")
 
@@ -404,12 +436,14 @@ if __name__ == '__main__':
 
     # extract the boolean "overwrite" variable from the input arguments
     if "o" in args:
+        print(args.o)
         if args.o in ["True", "true", "TRUE"]:
             overwrite = True
         elif args.o in ["False", "false", "FALSE"]:
             overwrite = False
         else:
-            raise ValueError('Overwrite variable is not recognised. Accepted values are "True" or "False".')
+            raise ValueError('Overwrite variable "{}" is not recognised. '
+                             'Accepted values are "True" or "False".'.format(args.o))
     else:
         overwrite = False
 
@@ -430,15 +464,18 @@ if __name__ == '__main__':
         # normalise the path of the infile to suit the operating system
         infile = os.path.normpath(args.i)
         # extract the column name from the command-line input
-        column_with_data = args.c
+        column = args.c
         # extract the sample/data name from the command-line input
         name = args.n
         # extract the excel_kwargs from the command-line input
         excel_kwargs = ast.literal_eval(args.e)
         # extract the csv_kwargs from the command-line input
-        csv_kwargs = ast.literal_eval(args.k)
+        if args.k is not None:
+            csv_kwargs = ast.literal_eval(args.k)
+        else:
+            csv_kwargs = None
         # run weighslide
-        run_weighslide(infile=infile, window=window, statistic=statistic, column_with_data=column_with_data,
+        run_weighslide(infile=infile, window=window, statistic=statistic, column=column,
                        name=name, excel_kwargs=excel_kwargs, csv_kwargs=csv_kwargs)
 
     elif args.r is not None:
@@ -449,7 +486,8 @@ if __name__ == '__main__':
         # convert the python list to a pandas Series
         raw_data_series = pd.Series(raw_data_list)
         # run the calculate_weighted_windows function
-        window_array, df_orig_sliced, df_multiplied, output_series = calculate_weighted_windows(raw_data_series, window, statistic)
+        window_array, df_orig_sliced, df_multiplied, output_series = calculate_weighted_windows(raw_data_series,
+                                                                                                window, statistic)
         print("\nWeighslide output:")
         # print out the values from the output series
         print(output_series.to_string(index=False, header=False))

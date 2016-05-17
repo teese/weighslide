@@ -38,4 +38,4 @@ setup(name='weighslide',
       classifiers=classifiers.splitlines(),
       keywords=["sliding window", "rolling window", "weighted window", "data normalisation", "data normalization",
                 "", "1D array", "numerical list"],
-      version='0.1.2')
+      version='0.1.3')
