@@ -88,9 +88,10 @@ In both cases the output files will be created in a subfolder within the same lo
 For more help regarding the command-line options:
 `python weighslide.py -h`
 
-Here is an example designed to run in Ipython/Jupyter, showing the power of weighslide 
-to smoothen out a regular pattern in a messy dataset.
+Here is an example designed for jupyter notebook, showing the power of weighslide
+to smoothen a repeated element in a noisy dataset.
 ```
+# create a noisy wave that repeats every 6th position. Save to csv.
 import weighslide
 import numpy as np
 import pandas as pd
@@ -98,14 +99,20 @@ import matplotlib.pyplot as plt
 % matplotlib inline
 plt.rcParams["savefig.dpi"] = 120
 df = pd.DataFrame()
-df['wave'] = [1,2,3,2]*8
+df['wave'] = [1,1,1,3,3,3]*8
 df["random"] = np.random.random_sample(df.shape[0])
-df["messy_wave"] = df.wave + df.random*4
-df.plot()
+df["noisy wave"] = df.wave + df.random*5
+df.plot(title="input data: noisy wave")
 df.to_csv("wave.csv")
-window = "9xxx9xxx9xxx9xxx9xxx9xxx9"
-weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="messy_wave", overwrite=True)
 ```
+![Image of input](examples/input.png)
+```
+# run weighslide with a window that averages every 6th position
+window = "9xxxxx9xxxxx9xxxxx9xxxxx9xxxxx9xxxxx9"
+weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="noisy wave", overwrite=True)
+```
+![Image of output](examples/output.png)
+
 
 **Examples of windows:**<br/>
 [1,1,1]<br/>&#8195; - if "statistic" is set to "mean", this window returns the average of the central position, and the two neighbouring positions
@@ -123,9 +130,9 @@ weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="m
 &#8195; - if the statistic is set to "mean", the result for each position will simply be the average of the surrounding 4 positions<br>
 
 # Contribute
-If you encounter a bug, please send me an email (mark.teese /at/ tum.de) or initiate an issue in Github. 
+If you encounter a bug or weighslide doesn't work for any reason, please send me an email (mark.teese /at/ tum.de) or initiate an issue in Github.
 
-Comments, criticisms, pull requests and collaborators are all welcome.
+Comments, pull requests and collaborators are all welcome.
 
 #License
 Weighslide is free software distributed under the GNU General Public License version 3.

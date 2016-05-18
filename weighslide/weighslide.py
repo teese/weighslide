@@ -119,12 +119,14 @@ def run_weighslide(infile, window, statistic, **kwargs):
     Weighslide is not currently optimised for performance. Input arrays must have <10 000 datapoints.
     """
     print("Starting weighslide analysis.")
+
+    # if the infile ends in .xls or .xlsx, open with excel_kwargs, if available
     if infile[-4:] == "xlsx" or infile[-4:] == "xls":
         if "excel_kwargs" in kwargs.keys():
             df = pd.read_excel(infile, **kwargs["excel_kwargs"])
         else:
             df = pd.read_excel(infile)
-
+    # if the infile ends in .csv, open with csv_kwargs, if available
     elif infile[-4:] == ".csv":
         if "csv_kwargs" in kwargs:
             if kwargs["csv_kwargs"] is not None:
@@ -136,11 +138,10 @@ def run_weighslide(infile, window, statistic, **kwargs):
     else:
         raise ValueError("Filetype must be excel or csv, and have an .xlsx, .xls, or .csv extension.")
 
-    print(df.shape[1])
-
+    # if the dataframe only has a single column, use it as the input data
     if df.shape[1] == 1:
         data_series = df.iloc[:,0]
-    # if the dataframe has multiple columns,
+    # if the dataframe has multiple columns, search in the kwargs for the appropriate column name for input data
     elif df.shape[1] > 1:
         if "column" in kwargs.keys() and kwargs["column"] is not None:
             column = kwargs["column"]
@@ -154,24 +155,24 @@ def run_weighslide(infile, window, statistic, **kwargs):
         raise ValueError("Input data not found. Imported {o} file {b} has {c} columns".format(a=infile[-4:],
                                                                                               b=infile,
                                                                                               c=df.shape[1]))
-
+    # get the path of the input file
     split_input_filepath = os.path.split(infile)
     inpath = split_input_filepath[0]
 
+    # get the sample/experiment name from input variables, otherwise use the first 20 characters of filename
     if "name" in kwargs.keys():
         out_name = kwargs["name"][:20]
     else:
-        # use the first 20 characters in the input filename as the name
         out_name = split_input_filepath[1][:20]
 
+    # if the window is a string, use first 20 characters in output filenames
     if type(window) == str:
-        # use first 20 characters in output filenames
         window_str = window[:20]
     else:
         # the list of weightings is probably not suitable to include in a filename. Use an empty string.
         window_str = ""
 
-    # create a base name for the output files, then individual paths for excel, csv and png outputs
+    # create a base name for the output files. Greate directory. Create output paths for excel, csv and png files.
     outpath = os.path.join(inpath,"weighslide_output")
     if not os.path.isdir(outpath):
         os.mkdir(outpath)
@@ -182,11 +183,13 @@ def run_weighslide(infile, window, statistic, **kwargs):
     out_csv_statistic = out_basename + "_{}".format(statistic) + ".csv"
     out_png = out_basename + ".png"
 
+    # determine the user variable "overwrite"
     if "overwrite" in kwargs.keys():
         overwrite = kwargs["overwrite"]
     else:
         overwrite = False
 
+    # check if output files exist. Raise error if they exist, and "overwrite" is not True
     list_check_if_existing = [out_excelfile, out_csv_slice, out_csv_mult, out_csv_statistic, out_png]
     for filepath in list_check_if_existing:
         if os.path.exists(filepath):
@@ -194,9 +197,11 @@ def run_weighslide(infile, window, statistic, **kwargs):
                 raise FileExistsError('\nOutput files already exist. To overwrite files, please change the'
                                       ' "overwrite" variable to True.')
 
+    # run the algorithm to calculate the weighted windows
     window_array, df_orig_sliced, df_multiplied, output_series = calculate_weighted_windows(data_series,
                                                                                             window, statistic)
 
+    # save output files to csv
     df_orig_sliced.to_csv(out_csv_slice)
     df_multiplied.to_csv(out_csv_mult)
     output_series.to_csv(out_csv_statistic)
@@ -205,6 +210,7 @@ def run_weighslide(infile, window, statistic, **kwargs):
     sys.stdout.write(".")
     sys.stdout.flush()
 
+    # save output files to excel
     writer = pd.ExcelWriter(out_excelfile)
     df_orig_sliced.to_excel(writer, sheet_name="orig_data_sliced")
     df_multiplied.to_excel(writer, sheet_name="data_multipled")
@@ -217,9 +223,9 @@ def run_weighslide(infile, window, statistic, **kwargs):
     sys.stdout.flush()
 
     ############################################################
-    #
-    #    Plot the data vs the original
-    #
+    #                                                          #
+    #         Plot the output data vs the original             #
+    #                                                          #
     ############################################################
 
     fig, ax = plt.subplots()
@@ -228,7 +234,8 @@ def run_weighslide(infile, window, statistic, **kwargs):
     ax.set_xlabel("position")
     ax.set_ylabel("value")
     window_string = str(window)
-    ax.set_title("weighslide output for window {}".format(window_string[:50]))
+    dots = "..." if len(window_string) > 20 else ""
+    ax.set_title("weighslide output for window {}{}".format(window_string[:20], dots))
     max_value = max(data_series.max(), output_series.max())
     min_value = min(data_series.min(), output_series.min())
     ax.set_ylim(min_value*0.8, max_value*1.2)
@@ -239,7 +246,9 @@ def run_weighslide(infile, window, statistic, **kwargs):
         if kwargs["showfig"] == True:
             plt.show()
 
-    print("\nWeighslide analysis is finished.\nLocation of output files:\n\t{}".format(outpath))
+    print("\nWeighslide analysis is finished.")
+    if len(inpath) > 1:
+        print("\nLocation of output files:\n\t{}".format(outpath))
 
 def calculate_weighted_windows(data_series, window, statistic):
     """ Apply the weighslide algorithm to an input series.
