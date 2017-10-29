@@ -250,7 +250,7 @@ def run_weighslide(infile, window, statistic, **kwargs):
     if len(inpath) > 1:
         print("\nLocation of output files:\n\t{}".format(outpath))
 
-def calculate_weighted_windows(data_series, window, statistic):
+def calculate_weighted_windows(data_series, window, statistic, full_output=True):
     """ Apply the weighslide algorithm to an input series.
 
     Parameters
@@ -391,9 +391,10 @@ def calculate_weighted_windows(data_series, window, statistic):
     output_series.index.name = "position"
     output_series.name = "{} over window".format(statistic)
 
-    return window_array, df_orig_sliced, df_multiplied, output_series
-
-
+    if full_output == True:
+        return window_array, df_orig_sliced, df_multiplied, output_series
+    else:
+        return output_series
 # create a parser object to read user inputs from the command line
 parser = argparse.ArgumentParser()
 # add command-line options
