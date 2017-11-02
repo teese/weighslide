@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
- Weighslide is a program for sliding window analysis of a list of numerical values,
- using flexible windows determined by the user.
+Weighslide is a program for sliding window analysis of a list of numerical values,
+using flexible windows determined by the user.
 
 Copyright (C) 2016  Mark George Teese
 
@@ -436,9 +436,9 @@ parser.add_argument("-k", #"--csv_kwargs",
 
 # if weighslide.py is run as the main python script, obtain the options from the command line.
 if __name__ == '__main__':
+
     print("\nTo view the help:\npython weighslide.py -h\n\nTo test the weighslide module:\n"
           "python weighslide.py [0.5,1.0,0.5] mean -r [1,3,5,7,2,4,3,5,7,2,4]\n\n")
-
     # obtain command-line arguments
     args = parser.parse_args()
 
