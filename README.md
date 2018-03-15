@@ -1,4 +1,5 @@
-#Weighslide
+# Weighslide
+
 Weighslide is a python program to calculate sliding windows across of a list of numerical values.
 The user sets the window size, and the exact weighting of each value in the window.
 
@@ -40,7 +41,7 @@ Weighslide takes as an input a 1D array (list) of numerical data, and applies a 
 The first and last array slices always contain flanking "not a number" (Nan) values, which are ignored in all calculations.
 The first and last output values therefore do not represent results from true, full-length windows.
 
-#Installation
+# Installation
 Weighslide depends on the following:
 * python (tested for version 3.5)
 * numpy
@@ -54,7 +55,7 @@ containing setup.py. Run the following:
 
 `python setup.py install`
 
-#Test
+# Test
 To test the module, open the command console and navigate to the folder
 containing weighslide.py. Run the following:
 
@@ -62,7 +63,7 @@ containing weighslide.py. Run the following:
 
 If successful, an output list will be printed on the screen.
 
-#Usage
+# Usage
 Here is an example of how to run weighslide within python, using an excel input file.
 ```
 import weighslide
@@ -134,5 +135,5 @@ If you encounter a bug or weighslide doesn't work for any reason, please send me
 
 Comments, pull requests and collaborators are all welcome.
 
-#License
+# License
 Weighslide is free software distributed under the GNU General Public License version 3.
