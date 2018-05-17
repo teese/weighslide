@@ -46,4 +46,4 @@ setup(name='weighslide',
       install_requires=["pandas", "numpy", "matplotlib"],
       keywords=["sliding window", "rolling window", "weighted window", "data normalisation", "data normalization",
                 "1D array", "numerical list"],
-      version='0.1.4')
+      version='0.1.5')
