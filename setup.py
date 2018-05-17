@@ -46,7 +46,7 @@ setup(name='weighslide',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url = "https://github.com/teese/weighslide",
-    download_url = 'https://github.com/teese/weighslide/archive/0.1.tar.gz',
+    download_url = 'https://github.com/teese/weighslide/archive/0.1.6.tar.gz',
     license='LGPLv3',
     classifiers=[
     "Development Status :: 3 - Alpha",

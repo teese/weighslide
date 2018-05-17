@@ -23,20 +23,20 @@ Weighslide takes as an input a 1D array (list) of numerical data, and applies a 
     statistic = "mean"
     dataset = [ 0  0  0  1  1  2  3  5  8  13  21]
     The window length is 3. The array will therefore be sliced as follows:
-              [ NaN  0  0 ]
-                 [ 0  0  1 ]
-                    [ 0  1  1 ]
-                      [ 1  1  2 ] and so on until the final slice [ 13  21  NaN ]
+    ........[ NaN  0  0 ]
+    .............[ 0  0  1 ]
+    ................[ 0  1  1 ]
+    ...................[ 1  1  2 ] and so on until the final slice [ 13  21  NaN ]
     Each array slice will be "weighted" by multiplication with the window, array-style, resulting in:
-              [ NaN  0  0 ]
-                 [ 0  0  2 ]
-                    [ 0  5  2 ]
-                       [ 2  5  4 ] and so on.
+    ........[ NaN  0  0 ]
+    .............[ 0  0  2 ]
+    ................[ 0  5  2 ]
+    ...................[ 2  5  4 ] and so on.
     If the "statistic" variable is given as "mean", a mean will be calculated for each array slice.
-              [    0    ]
-                 [   0.66  ]
-                    [   2.33  ]
-                       [  3.66  ] and so on.
+    ..........[    0    ]
+    .............[   0.66  ]
+    ................[   2.33  ]
+    ...................[  3.66  ] and so on.
     The "statistic" can be mean, std, or sum.
     The value (in this case the mean) will replace the central position in the output 1D array.
     output = [ 0.00  0.00  0.66  2.33  3.66  6.00  9.66  15.6  25.3  41.0  65.5  ]
