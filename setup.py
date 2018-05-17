@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 from setuptools import setup, find_packages
-import path
+from os import path
 
 # grab the long_description from the readme file
 here = path.abspath(path.dirname(__file__))
@@ -41,6 +41,7 @@ setup(name='weighslide',
     version='0.1.5',
     description="Flexible sliding window analysis",
     author='Mark Teese',
+    author_email='mark.teese -ät- tum -d0t- de',
     long_description=long_description,
     url = "https://github.com/teese/weighslide",
     download_url = 'https://github.com/teese/weighslide/archive/0.1.tar.gz',

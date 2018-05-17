@@ -7,14 +7,15 @@ The sliding window (rolling window) analysis is used in diverse scientific and f
 The current weighslide program is designed to be easy to use and allows highly customisable windows. Weighslide is not currently
 optimised for large datasets.
 
-**Citation:**<br /> A publication will be added at a later date. For now, please cite as follows:
-"A sliding window analysis was performed using the weighslide module in python (Mark Teese, Technical University of Munich)."
-**Keywords:**<br /> sliding window, rolling window, weighted window, data normalisation, data normalization, 1D array, numerical list
+#####Citation:
+A publication will be added at a later date. For now, please cite as follows:
+"A sliding window analysis was performed using the weighslide module in python (Mark Teese, Technical University of Munich)."<br>
+#####Keywords:
+sliding window, rolling window, weighted window, data normalisation, data normalization, 1D array, numerical list<br>
 
 
 # How it works
-Weighslide takes as an input a 1D array (list) of numerical data, and applies a user-defined weighting and
-    algorithm in a sliding-window fashion across the data.
+Weighslide takes as an input a 1D array (list) of numerical data, and applies a user-defined weighting and algorithm in a sliding-window fashion across the data.
     
 
     For example:
@@ -117,20 +118,24 @@ weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="n
 ![Image of output](examples/output.png)
 
 
-**Examples of windows:**<br/>
-[1,1,1]<br/>&#8195; - if "statistic" is set to "mean", this window returns the average of the central position, and the two neighbouring positions
-&#8195; - the window size is 3<br>
+**Examples of windows:**
+
+[1,1,1]
+* if "statistic" is set to "mean", this window returns the average of the central position, and the two neighbouring positions
+* the window size is 3
 
 
-[1,1,"x",1,1]<br/>&#8195; - the central position "x" has no weighting at all
-&#8195; - the window size is 5, it consists of the central position, two upstream, and two downstream positions
-&#8195; - the positions upstream (-1, -2) and downstream (1, 2) of the central position are all equally weighted
-&#8195; - if the statistic is set to "mean", the result for each position will simply be the average of the surrounding 4 positions<br>
+[1,1,"x",1,1]
+* the central position "x" has no weighting at all
+* the window size is 5, it consists of the central position, two upstream, and two downstream positions
+* the positions upstream (-1, -2) and downstream (1, 2) of the central position are all equally weighted
+* if the statistic is set to "mean", the result for each position will simply be the average of the surrounding 4 positions
 
-[0.5, 1, 0.5, 2, 0.5, 1, 0.5]<br/>&#8195; - the central position "2" is highly weighted (2*orig value)
-&#8195; - the window size is 7, it consists of the central position, three upstream, and three downstream positions
-&#8195; - the positions upstream (-1, -2, -3) and downstream (1, 2, 3) of the central position are unequally weighted.
-&#8195; - if the statistic is set to "mean", the result for each position will simply be the average of the surrounding 4 positions<br>
+[0.5, 1, 0.5, 2, 0.5, 1, 0.5]
+* the central position "2" is highly weighted (2*orig value)
+* the window size is 7, it consists of the central position, three upstream, and three downstream positions
+* the positions upstream (-1, -2, -3) and downstream (1, 2, 3) of the central position are unequally weighted
+* if the statistic is set to "mean", the result for each position will simply be the average of the surrounding 4 positions
 
 # Contribute
 If you encounter a bug or weighslide doesn't work for any reason, please send me an email (available at my TUM website) or initiate an issue in Github.
