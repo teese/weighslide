@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from setuptools import setup, find_packages
 from os import path
+import glob
 
 # grab the long_description from the readme file
 here = path.abspath(path.dirname(__file__))
@@ -58,6 +59,7 @@ setup(name='weighslide',
     python_requires='>=3',
     # include the example png files
     include_package_data=True,
-    package_data={'weighslide':['examples/*.png']},
+    #package_data={'weighslide':['examples/*.png']}, # not recommended, as overrides manifest
+    py_modules=[path.splitext(path.basename(i))[0] for i in glob.glob("weighslide/*.py")],
     keywords="sliding data normalisation normalization array"
     )

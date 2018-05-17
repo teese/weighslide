@@ -1,2 +1,6 @@
-include *.png
-include *.txt
+include MANIFEST.in
+include LICENSE.txt
+include setup.cfg
+include README.md
+include examples/input.png
+include examples/output.png
