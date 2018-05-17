@@ -21,21 +21,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 from setuptools import setup, find_packages
+import path
+
+# grab the long_description from the readme file
+here = path.abspath(path.dirname(__file__))
+with open(path.join(here, "README.md"), encoding="utf-8") as f:
+    long_description = f.read()
 
 classifiers = """\
-Development Status :: Experimental
+Development Status :: 3 - Alpha
 Intended Audience :: Science/Research
 License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)
-Programming Language :: Python :: 3
+Programming Language :: Python :: 3.6
 Topic :: Scientific/Engineering :: Bio-Informatics
 """
 
 setup(name='weighslide',
       author='Mark Teese',
-      author_email='mark.teese at tum.de',
+      description="Flexible sliding window analysis",
+      long_description=long_description,
       license='LGPLv3',
       packages=find_packages(),
       classifiers=classifiers.splitlines(),
+      install_requires=["pandas", "numpy", "matplotlib"],
       keywords=["sliding window", "rolling window", "weighted window", "data normalisation", "data normalization",
-                "", "1D array", "numerical list"],
-      version='0.1.3')
+                "1D array", "numerical list"],
+      version='0.1.4')

@@ -130,9 +130,8 @@ weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="n
 &#8195; - if the statistic is set to "mean", the result for each position will simply be the average of the surrounding 4 positions<br>
 
 # Contribute
-If you encounter a bug or weighslide doesn't work for any reason, please send me an email (mark.teese /at/ tum.de) or initiate an issue in Github.
-
-Comments, pull requests and collaborators are all welcome.
+If you encounter a bug or weighslide doesn't work for any reason, please send me an email (available at my TUM website) or initiate an issue in Github.
+Pull requests are welcome.
 
 #License
 Weighslide is free software distributed under the GNU General Public License version 3.
