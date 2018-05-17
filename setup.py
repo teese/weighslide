@@ -22,12 +22,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from setuptools import setup, find_packages
 from os import path
-import glob
 
 # grab the long_description from the readme file
 here = path.abspath(path.dirname(__file__))
 with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
+
+print(long_description)
 
 setup(name='weighslide',
     packages=find_packages(),
@@ -35,9 +36,8 @@ setup(name='weighslide',
     description="Flexible sliding window analysis",
     author='Mark Teese',
     author_email='mark.teese -ät- tum -d0t- de',
-    long_description="long_description",
+    long_description=long_description,
     url = "https://github.com/teese/weighslide",
-    download_url = 'https://github.com/teese/weighslide/archive/0.1.6.tar.gz',
     license='LGPLv3',
     classifiers=[
     "Development Status :: 3 - Alpha",
@@ -47,9 +47,6 @@ setup(name='weighslide',
     "Topic :: Scientific/Engineering :: Bio-Informatics"
     ],
     install_requires=["pandas", "numpy", "matplotlib"],
-    python_requires='>=3',
-    include_package_data=True,
-    py_modules=[path.splitext(path.basename(i))[0] for i in glob.glob("weighslide/*.py")],
     keywords="sliding data normalisation normalization array"
     )
 # include the example png files
