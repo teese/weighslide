@@ -38,7 +38,7 @@ Topic :: Scientific/Engineering :: Bio-Informatics
 
 setup(name='weighslide',
     packages=find_packages(),
-    version='0.1.5',
+    version='0.1',
     description="Flexible sliding window analysis",
     author='Mark Teese',
     author_email='mark.teese -ät- tum -d0t- de',
@@ -48,5 +48,5 @@ setup(name='weighslide',
     license='LGPLv3',
     classifiers=classifiers.splitlines(),
     install_requires=["pandas", "numpy", "matplotlib"],
-    keywords=["sliding", "data", "normalisation", "normalization","array"]
+    keywords="sliding data normalisation normalization array"
     )
