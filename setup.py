@@ -57,9 +57,9 @@ setup(name='weighslide',
     ],
     install_requires=["pandas", "numpy", "matplotlib"],
     python_requires='>=3',
-    # include the example png files
     include_package_data=True,
-    #package_data={'weighslide':['examples/*.png']}, # not recommended, as overrides manifest
     py_modules=[path.splitext(path.basename(i))[0] for i in glob.glob("weighslide/*.py")],
     keywords="sliding data normalisation normalization array"
     )
+# include the example png files
+#package_data={'weighslide':['examples/*.png']}, # not recommended, as overrides manifest
