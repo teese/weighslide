@@ -37,13 +37,15 @@ Topic :: Scientific/Engineering :: Bio-Informatics
 """
 
 setup(name='weighslide',
-      author='Mark Teese',
-      description="Flexible sliding window analysis",
-      long_description=long_description,
-      license='LGPLv3',
-      packages=find_packages(),
-      classifiers=classifiers.splitlines(),
-      install_requires=["pandas", "numpy", "matplotlib"],
-      keywords=["sliding window", "rolling window", "weighted window", "data normalisation", "data normalization",
-                "1D array", "numerical list"],
-      version='0.1.5')
+    packages=find_packages(),
+    version='0.1.5',
+    description="Flexible sliding window analysis",
+    author='Mark Teese',
+    long_description=long_description,
+    url = "https://github.com/teese/weighslide",
+    download_url = 'https://github.com/teese/weighslide/archive/0.1.tar.gz',
+    license='LGPLv3',
+    classifiers=classifiers.splitlines(),
+    install_requires=["pandas", "numpy", "matplotlib"],
+    keywords=["sliding", "data", "normalisation", "normalization","array"]
+    )

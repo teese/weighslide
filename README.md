@@ -9,6 +9,8 @@ optimised for large datasets.
 
 **Citation:**<br /> A publication will be added at a later date. For now, please cite as follows:
 "A sliding window analysis was performed using the weighslide module in python (Mark Teese, Technical University of Munich)."
+**Keywords:**<br /> sliding window, rolling window, weighted window, data normalisation, data normalization, 1D array, numerical list
+
 
 # How it works
 Weighslide takes as an input a 1D array (list) of numerical data, and applies a user-defined weighting and
