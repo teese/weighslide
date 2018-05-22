@@ -1,17 +1,19 @@
-
 # Weighslide  
   
 Weighslide is a python program to calculate sliding windows across of a list of numerical values.  
 The user sets the window size, and the exact weighting of each value in the window.  
   
-The sliding window (rolling window) analysis is used in diverse scientific and financial fields.  
-The current weighslide program is designed to be easy to use and allows highly customisable windows. Weighslide is not currently  
-optimised for large datasets.  
+## What is it used for?
+Weighslide was developed for use in bioinformatics. Alpha-helices are common protein secondary structure, and have
+a periodicity of 3.6 residues per turn. Weighslide allows numerical values to be weighted according to alpha-helical peridicity.
+
+Note that weighslide is not currently optimised for large datasets.
   
-##### Citation:  
+## Citation:  
 A publication will be added at a later date. For now, please cite as follows:  
-"A sliding window analysis was performed using the weighslide module in python (Mark Teese, Technical University of Munich)."<br>  
-##### Keywords:  
+"A sliding window analysis was performed using the weighslide package in python (Mark Teese, Technical University of Munich)."<br>  
+
+## Keywords:  
 sliding window, rolling window, weighted window, data normalisation, data normalization, 1D array, numerical list<br>  
   
   
@@ -46,22 +48,22 @@ output = [ 0.00  0.00  0.66  2.33  3.66  6.00  9.66  15.6  25.3  41.0  65.5  ]
 The first and last array slices always contain flanking "not a number" (Nan) values, which are ignored in all calculations.  
 The first and last output values therefore do not represent results from true, full-length windows.  
   
-# Installation  
+# Installation
+
+`pip install weighslide`  
+
 Weighslide depends on the following:  
 * python (tested for version 3.5)  
 * numpy  
 * pandas  
 * matplotlib  
   
-For Windows users, we recommend Anaconda python 3.x. The Anaconda package should contain all required python modules.  
+For Windows users, we recommend Anaconda python 3.x. The Anaconda package should contain all required python packages.  
   
-To install as a python module, allowing `import weighslide`, open the command console and navigate to the weighslide folder  
-containing setup.py. Run the following:  
-  
-`python setup.py install`  
+To install as a python package from GitHub, download and unzip the latest release and run `python setup.py install` in the relevant package folder.
   
 # Test  
-To test the module, open the command console and navigate to the folder  
+To test the package, open the command console and navigate to the folder  
 containing weighslide.py. Run the following:  
   
 `python weighslide.py [1,1,"x",1,1] mean -r [1,1,2,3,5,8,13,21,34]`  
@@ -111,13 +113,13 @@ df["noisy wave"] = df.wave + df.random*5
 df.plot(title="input data: noisy wave")  
 df.to_csv("wave.csv")  
 ```  
-[Image of input](examples/input.png)  
+[Image of input](https://raw.githubusercontent.com/teese/weighslide/master/examples/input.png)  
 ```  
 # run weighslide with a window that averages every 6th position  
 window = "9xxxxx9xxxxx9xxxxx9xxxxx9xxxxx9xxxxx9"  
 weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="noisy wave", overwrite=True)  
 ```  
-[Image of output](examples/output.png)  
+[Image of output](https://raw.githubusercontent.com/teese/weighslide/master/examples/output.png)  
   
   
 **Examples of windows:**  
@@ -140,8 +142,12 @@ weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="n
 * if the statistic is set to "mean", the result for each position will simply be the average of the surrounding 4 positions  
   
 # Contribute  
-If you encounter a bug or weighslide doesn't work for any reason, please send me an email (available at my TUM website) or initiate an issue in Github.  
+If you encounter a bug or weighslide doesn't work for any reason, please send me an email (available in an image below, or at my TUM website) or initiate an issue in Github.  
 Pull requests are welcome.  
   
 # License  
 Weighslide is free software distributed under the GNU General Public License version 3.
+
+# Contact
+
+![signac_seine_bei_samois](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/signac_seine_bei_samois.png)

@@ -25,20 +25,22 @@ from os import path
 
 # grab the long_description from the readme file
 here = path.abspath(path.dirname(__file__))
-with open(path.join(here, "README.md"), encoding="utf-8") as f:
+with open(path.join(here, "README.md")) as f:
     long_description = f.read()
 
 setup(name='weighslide',
     packages=find_packages(),
-    version='0.1.6',
+    version='0.1.7',
     description="Flexible sliding window analysis",
     author='Mark Teese',
-    author_email='mark.teese -ät- tum -d0t- de',
+    author_email='mark.teese@SeeImageBelowOrMyTUMwebsite.de',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url = "https://github.com/teese/weighslide",
+    download_url = 'https://github.com/teese/weighslide/archive/0.1.7.tar.gz',
+	project_urls={'LangoschLab':'http://cbp.wzw.tum.de/index.php?id=9', "TU_Muenchen":"https://www.tum.de"},
     license='LGPLv3',
     classifiers=[
-    "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
     "Programming Language :: Python :: 3.6",
@@ -47,6 +49,3 @@ setup(name='weighslide',
     install_requires=["pandas", "numpy", "matplotlib"],
     keywords="sliding data normalisation normalization array"
     )
-# include the example png files
-#package_data={'weighslide':['examples/*.png']}, # not recommended, as overrides manifest
-#long_description_content_type='text/markdown',
