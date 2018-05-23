@@ -23,21 +23,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from setuptools import setup, find_packages
 from os import path
 
-# grab the long_description from the readme file
 here = path.abspath(path.dirname(__file__))
-with open(path.join(here, "README.md")) as f:
+# Get the long description from the README file
+with open(path.join(here, 'README.md'), "r", encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='weighslide',
     packages=find_packages(),
-    version='0.1.7',
+    version='0.2.4',
     description="Flexible sliding window analysis",
     author='Mark Teese',
     author_email='mark.teese@SeeImageBelowOrMyTUMwebsite.de',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url = "https://github.com/teese/weighslide",
-    download_url = 'https://github.com/teese/weighslide/archive/0.1.7.tar.gz',
+    download_url = 'https://github.com/teese/weighslide/archive/0.2.4.tar.gz',
 	project_urls={'LangoschLab':'http://cbp.wzw.tum.de/index.php?id=9', "TU_Muenchen":"https://www.tum.de"},
     license='LGPLv3',
     classifiers=[

@@ -1,7 +1,7 @@
 # Weighslide  
   
 Weighslide is a python program to calculate sliding windows across of a list of numerical values.  
-The user sets the window size, and the exact weighting of each value in the window.  
+The user sets the window size, and the exact weighting of each value in the window.
   
 ## What is it used for?
 Weighslide was developed for use in bioinformatics. Alpha-helices are common protein secondary structure, and have
@@ -15,8 +15,7 @@ A publication will be added at a later date. For now, please cite as follows:
 
 ## Keywords:  
 sliding window, rolling window, weighted window, data normalisation, data normalization, 1D array, numerical list<br>  
-  
-  
+
 # How it works  
 Weighslide takes as an input a 1D array (list) of numerical data, and applies a user-defined weighting and algorithm in a sliding-window fashion across the data.  
       
