@@ -78,7 +78,7 @@ def run_weighslide(infile: Union[Path, str], window: Union[list, str], statistic
     Saved Files and Figures
     -------
     All output files are saved in a subfolder based on the input xlsx or csv file:
-    D:\Path\To\Your\Input\File\weighslide_output\
+    D:/Path/To/Your/Input/File/weighslide_output/
 
     out_csv_statistic : csv
         Output file after applying weighslide to the input list of numerical values.
@@ -193,12 +193,10 @@ def run_weighslide(infile: Union[Path, str], window: Union[list, str], statistic
     sys.stdout.flush()
 
     # save output files to excel
-    writer = pd.ExcelWriter(out_excelfile)
-    df_orig_sliced.to_excel(writer, sheet_name="orig_data_sliced")
-    df_multiplied.to_excel(writer, sheet_name="data_multipled")
-    output_series.to_frame(name="window_{}".format(statistic)).to_excel(writer, sheet_name="window_{}".format(statistic))
-    writer.save()
-    writer.close()
+    with pd.ExcelWriter(out_excelfile) as writer:
+        df_orig_sliced.to_excel(writer, sheet_name="orig_data_sliced")
+        df_multiplied.to_excel(writer, sheet_name="data_multipled")
+        output_series.to_frame(name="window_{}".format(statistic)).to_excel(writer, sheet_name="window_{}".format(statistic))
 
     # print dot showing progress
     sys.stdout.write(".")
@@ -318,7 +316,7 @@ def calculate_weighted_windows(data_series, window, statistic, full_output=True)
     extend_series = data_series.reindex(s_index)
 
     # create output series for the final window-averaged data
-    output_series = pd.Series(index=data_series.index)
+    output_series = pd.Series(index=data_series.index, dtype=float)
     # create output dataframes for saving all the slices etc.
     df_orig_sliced = pd.DataFrame()
     df_multiplied = pd.DataFrame()
@@ -402,7 +400,7 @@ parser.add_argument("-r",  # "--rawdata",
 parser.add_argument("-i",  # "-infile",
                     default=None,
                     help=r'Full path of file containing original data in csv or excel format.'
-                         r'E.g. "C:\Path\to\your\file.xlsx"')
+                         r'E.g. "C:/Path/to/your/file.xlsx"')
 parser.add_argument("-n",  # "--name",
                     default="",
                     help="Name of dataset. Should not be longer than 20 characters. Used in output filenames.")
