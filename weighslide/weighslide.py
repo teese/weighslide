@@ -1,25 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Weighslide is a program for sliding window analysis of a list of numerical values,
-using flexible windows determined by the user.
+from pathlib import Path
+from typing import Union
 
-Copyright (C) 2016  Mark George Teese
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-"""
 import numpy as np
 import pandas as pd
 import os
@@ -28,7 +9,8 @@ import argparse
 import ast
 import sys
 
-def run_weighslide(infile, window, statistic, **kwargs):
+
+def run_weighslide(infile: Union[Path, str], window: Union[list, str], statistic: str, **kwargs):
     """ Runs the weighslide algorithm using data from an input file, and saves the output files and figures
 
     Weighslide takes as an input a 1D array (list) of numerical data, and applies a user-defined weighting and
@@ -121,13 +103,14 @@ def run_weighslide(infile, window, statistic, **kwargs):
     print("Starting weighslide analysis.")
 
     # if the infile ends in .xls or .xlsx, open with excel_kwargs, if available
-    if infile[-4:] == "xlsx" or infile[-4:] == "xls":
+    filetype = str(infile.name).split(".")[-1]
+    if filetype == "xlsx" or filetype == "xls":
         if "excel_kwargs" in kwargs.keys():
             df = pd.read_excel(infile, **kwargs["excel_kwargs"])
         else:
             df = pd.read_excel(infile)
     # if the infile ends in .csv, open with csv_kwargs, if available
-    elif infile[-4:] == ".csv":
+    elif filetype == "csv":
         if "csv_kwargs" in kwargs:
             if kwargs["csv_kwargs"] is not None:
                 df = pd.read_csv(infile, **kwargs["csv_kwargs"])
@@ -140,7 +123,7 @@ def run_weighslide(infile, window, statistic, **kwargs):
 
     # if the dataframe only has a single column, use it as the input data
     if df.shape[1] == 1:
-        data_series = df.iloc[:,0]
+        data_series = df.iloc[:, 0]
     # if the dataframe has multiple columns, search in the kwargs for the appropriate column name for input data
     elif df.shape[1] > 1:
         if "column" in kwargs.keys() and kwargs["column"] is not None:
@@ -152,9 +135,8 @@ def run_weighslide(infile, window, statistic, **kwargs):
                              r'therefore the column name with data needs to be input as a column '
                              r'variable.'.format(infile))
     else:
-        raise ValueError("Input data not found. Imported {o} file {b} has {c} columns".format(a=infile[-4:],
-                                                                                              b=infile,
-                                                                                              c=df.shape[1]))
+        raise ValueError(f"Input data not found. Imported {filetype} file '{infile}' has {df.shape[1]} columns")
+
     # get the path of the input file
     split_input_filepath = os.path.split(infile)
     inpath = split_input_filepath[0]
@@ -173,7 +155,7 @@ def run_weighslide(infile, window, statistic, **kwargs):
         window_str = ""
 
     # create a base name for the output files. Greate directory. Create output paths for excel, csv and png files.
-    outpath = os.path.join(inpath,"weighslide_output")
+    outpath = os.path.join(inpath, "weighslide_output")
     if not os.path.isdir(outpath):
         os.mkdir(outpath)
     out_basename = os.path.join(outpath, out_name + window_str)
@@ -238,7 +220,7 @@ def run_weighslide(infile, window, statistic, **kwargs):
     ax.set_title("weighslide output for window {}{}".format(window_string[:20], dots))
     max_value = max(data_series.max(), output_series.max())
     min_value = min(data_series.min(), output_series.min())
-    ax.set_ylim(min_value*0.8, max_value*1.2)
+    ax.set_ylim(min_value * 0.8, max_value * 1.2)
     lgd = ax.legend()
     plt.tight_layout()
     fig.savefig(out_png, format='png', dpi=200)
@@ -249,6 +231,7 @@ def run_weighslide(infile, window, statistic, **kwargs):
     print("\nWeighslide analysis is finished.")
     if len(inpath) > 1:
         print("\nLocation of output files:\n\t{}".format(outpath))
+
 
 def calculate_weighted_windows(data_series, window, statistic, full_output=True):
     """ Apply the weighslide algorithm to an input series.
@@ -288,11 +271,11 @@ def calculate_weighted_windows(data_series, window, statistic, full_output=True)
         # determine length of the window from the user input window
         window_length = len(window)
         # split into a list, convert to float, divide by 10 to yield a proportion
-        window_series = pd.Series(list(window))
+        window_series: pd.Series = pd.Series(list(window))
         # replace x with np.nan
         window_series.replace("x", np.nan, inplace=True)
         # change dtype to float
-        window_series = window_series.astype(float)
+        window_series: pd.Series = window_series.astype(float)
         # convert 0-9 scale to 1-10, divide by 10 to give a relative weighting
         window_series = (window_series + 1) / 10
         # convert the series to a numpy array
@@ -363,7 +346,8 @@ def calculate_weighted_windows(data_series, window, statistic, full_output=True)
         data_range = list(range(start, end))
         # slice out the original data from the window (e.g. 11 residues)
         # orig_sliced = extend_series.loc[i:i+window_length-1]
-        orig_sliced = extend_series.loc[data_range]
+        # orig_sliced = extend_series[extend_series.index.isin(data_range)]
+        orig_sliced = extend_series.reindex(data_range)
         orig_sliced.name = "window {}".format(i)
         orig_sliced_for_excel = orig_sliced.fillna("nodata")
         df_orig_sliced = pd.concat([df_orig_sliced, orig_sliced_for_excel], axis=1, names=[start])
@@ -395,17 +379,20 @@ def calculate_weighted_windows(data_series, window, statistic, full_output=True)
         return window_array, df_orig_sliced, df_multiplied, output_series
     else:
         return output_series
+
+
 # create a parser object to read user inputs from the command line
 parser = argparse.ArgumentParser()
+
 # add command-line options
-parser.add_argument("w", #"--window",
+parser.add_argument("w",  # "--window",
                     help="Sliding weighted window. Can be either a python list "
                          "(e.g. [0.3,1.0,0.3,0,0.3,1.0,0.3,0,0.3,1.0,0.3]), or a list of numbers that will be "
                          "converted to a python list (e.g. 393x393x393), where x represents positions that are ignored"
                          "and 9 represents positions that are most highly weighted.")
-parser.add_argument("s",#"--statistic",
+parser.add_argument("s",  # "--statistic",
                     default="mean",
-                    type=str, choices=["mean","std","sum"],
+                    type=str, choices=["mean", "std", "sum"],
                     help="The choices are mean, std or sum. Desired method to reduce the weighted values in the to a "
                          "single value at the central position.")
 parser.add_argument("-r",  # "--rawdata",
@@ -416,20 +403,20 @@ parser.add_argument("-i",  # "-infile",
                     default=None,
                     help=r'Full path of file containing original data in csv or excel format.'
                          r'E.g. "C:\Path\to\your\file.xlsx"')
-parser.add_argument("-n", #"--name",
+parser.add_argument("-n",  # "--name",
                     default="",
                     help="Name of dataset. Should not be longer than 20 characters. Used in output filenames.")
-parser.add_argument("-c", #"--column",
+parser.add_argument("-c",  # "--column",
                     default=None,
                     help='Column name in input file that should be used for analysis. E.g. "data values"')
 parser.add_argument("-o",  # "--overwrite",
                     type=str, default="False",
                     help='If True, existing files will be overwritten.')
-parser.add_argument("-e", #"--excel_kwargs",
+parser.add_argument("-e",  # "--excel_kwargs",
                     default="None",
                     help="Keyword arguments in python dictionary format to be used when opening "
                          "an excel file using the python pandas module. (E.g. {'sheet_name':'orig_data'}")
-parser.add_argument("-k", #"--csv_kwargs",
+parser.add_argument("-k",  # "--csv_kwargs",
                     default=None,
                     help="Keyword arguments in python dictionary format to be used when opening "
                          "your csv file using the python pandas module. (E.g. {'delimeter':',','header'='infer'}")

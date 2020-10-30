@@ -10,7 +10,7 @@ a periodicity of 3.6 residues per turn. Weighslide allows numerical values to be
 Note that weighslide is not currently optimised for large datasets.
   
 ## Citation:  
-A publication will be added at a later date. For now, please cite as follows:  
+Please cite as follows:  
 "A sliding window analysis was performed using the weighslide package in python (Mark Teese, Technical University of Munich)."<br>  
 
 ## Keywords:  
@@ -112,13 +112,13 @@ df["noisy wave"] = df.wave + df.random*5
 df.plot(title="input data: noisy wave")  
 df.to_csv("wave.csv")  
 ```  
-[Image of input](https://raw.githubusercontent.com/teese/weighslide/master/examples/input.png)  
+![Image of input](https://github.com/teese/weighslide/raw/master/examples/input.png)  
 ```  
 # run weighslide with a window that averages every 6th position  
 window = "9xxxxx9xxxxx9xxxxx9xxxxx9xxxxx9xxxxx9"  
 weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="noisy wave", overwrite=True)  
 ```  
-[Image of output](https://raw.githubusercontent.com/teese/weighslide/master/examples/output.png)  
+![Image of output](https://github.com/teese/weighslide/raw/master/examples/output.png)  
   
   
 **Examples of windows:**  
@@ -126,7 +126,6 @@ weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="n
 [1,1,1]  
 * if "statistic" is set to "mean", this window returns the average of the central position, and the two neighbouring positions  
 * the window size is 3  
-  
   
 [1,1,"x",1,1]  
 * the central position "x" has no weighting at all  
@@ -145,8 +144,8 @@ If you encounter a bug or weighslide doesn't work for any reason, please send me
 Pull requests are welcome.  
   
 # License  
-Weighslide is free software distributed under the GNU General Public License version 3.
+Weighslide is free software distributed under the permissive MIT license.
 
 # Contact
 
-![signac_seine_bei_samois](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/signac_seine_bei_samois.png)
+![contact details](https://github.com/teese/eccpy/raw/develop/docs/images/signac_seine_bei_samois.png)
