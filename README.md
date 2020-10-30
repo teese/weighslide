@@ -145,7 +145,7 @@ If you encounter a bug or weighslide doesn't work for any reason, please send me
 Pull requests are welcome.  
   
 # License  
-Weighslide is free software distributed under the GNU General Public License version 3.
+Weighslide is free software distributed under the permissive MIT license.
 
 # Contact
 
