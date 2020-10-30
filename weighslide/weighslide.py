@@ -9,7 +9,8 @@ import argparse
 import ast
 import sys
 
-def run_weighslide(infile, window, statistic, **kwargs):
+
+def run_weighslide(infile: Union[Path, str], window: Union[list, str], statistic: str, **kwargs):
     """ Runs the weighslide algorithm using data from an input file, and saves the output files and figures
 
     Weighslide takes as an input a 1D array (list) of numerical data, and applies a user-defined weighting and
@@ -102,13 +103,14 @@ def run_weighslide(infile, window, statistic, **kwargs):
     print("Starting weighslide analysis.")
 
     # if the infile ends in .xls or .xlsx, open with excel_kwargs, if available
-    if infile[-4:] == "xlsx" or infile[-4:] == "xls":
+    filetype = str(infile.name).split(".")[-1]
+    if filetype == "xlsx" or filetype == "xls":
         if "excel_kwargs" in kwargs.keys():
             df = pd.read_excel(infile, **kwargs["excel_kwargs"])
         else:
             df = pd.read_excel(infile)
     # if the infile ends in .csv, open with csv_kwargs, if available
-    elif infile[-4:] == ".csv":
+    elif filetype == "csv":
         if "csv_kwargs" in kwargs:
             if kwargs["csv_kwargs"] is not None:
                 df = pd.read_csv(infile, **kwargs["csv_kwargs"])
@@ -133,9 +135,8 @@ def run_weighslide(infile, window, statistic, **kwargs):
                              r'therefore the column name with data needs to be input as a column '
                              r'variable.'.format(infile))
     else:
-        raise ValueError("Input data not found. Imported {o} file {b} has {c} columns".format(a=infile[-4:],
-                                                                                              b=infile,
-                                                                                              c=df.shape[1]))
+        raise ValueError(f"Input data not found. Imported {filetype} file '{infile}' has {df.shape[1]} columns")
+
     # get the path of the input file
     split_input_filepath = os.path.split(infile)
     inpath = split_input_filepath[0]
@@ -269,11 +270,11 @@ def calculate_weighted_windows(data_series, window, statistic, full_output=True)
         # determine length of the window from the user input window
         window_length = len(window)
         # split into a list, convert to float, divide by 10 to yield a proportion
-        window_series = pd.Series(list(window))
+        window_series: pd.Series = pd.Series(list(window))
         # replace x with np.nan
         window_series.replace("x", np.nan, inplace=True)
         # change dtype to float
-        window_series = window_series.astype(float)
+        window_series: pd.Series = window_series.astype(float)
         # convert 0-9 scale to 1-10, divide by 10 to give a relative weighting
         window_series = (window_series + 1) / 10
         # convert the series to a numpy array
@@ -344,7 +345,8 @@ def calculate_weighted_windows(data_series, window, statistic, full_output=True)
         data_range = list(range(start, end))
         # slice out the original data from the window (e.g. 11 residues)
         # orig_sliced = extend_series.loc[i:i+window_length-1]
-        orig_sliced = extend_series.loc[data_range]
+        # orig_sliced = extend_series[extend_series.index.isin(data_range)]
+        orig_sliced = extend_series.reindex(data_range)
         orig_sliced.name = "window {}".format(i)
         orig_sliced_for_excel = orig_sliced.fillna("nodata")
         df_orig_sliced = pd.concat([df_orig_sliced, orig_sliced_for_excel], axis=1, names=[start])
@@ -376,8 +378,11 @@ def calculate_weighted_windows(data_series, window, statistic, full_output=True)
         return window_array, df_orig_sliced, df_multiplied, output_series
     else:
         return output_series
+
+
 # create a parser object to read user inputs from the command line
 parser = argparse.ArgumentParser()
+
 # add command-line options
 parser.add_argument("w", #"--window",
                     help="Sliding weighted window. Can be either a python list "
