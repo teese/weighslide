@@ -1,0 +1,37 @@
+tests/temp_output
+
+#pycharm stuff
+.idea
+.idea\\inspectionProfiles\\profiles_settings.xml
+.idea/weighslide.iml
+.idea\\weighslide.iml
+.idea/misc.xml
+.idea\\misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+
+# setuptools folders
+build/
+dist/
+weighslide.egg-info/
+
+# Distribution / packaging
+env/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+/weighslide.egg-info/
+
+*__pycache__*
