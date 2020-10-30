@@ -123,7 +123,7 @@ def run_weighslide(infile: Union[Path, str], window: Union[list, str], statistic
 
     # if the dataframe only has a single column, use it as the input data
     if df.shape[1] == 1:
-        data_series = df.iloc[:,0]
+        data_series = df.iloc[:, 0]
     # if the dataframe has multiple columns, search in the kwargs for the appropriate column name for input data
     elif df.shape[1] > 1:
         if "column" in kwargs.keys() and kwargs["column"] is not None:
@@ -155,7 +155,7 @@ def run_weighslide(infile: Union[Path, str], window: Union[list, str], statistic
         window_str = ""
 
     # create a base name for the output files. Greate directory. Create output paths for excel, csv and png files.
-    outpath = os.path.join(inpath,"weighslide_output")
+    outpath = os.path.join(inpath, "weighslide_output")
     if not os.path.isdir(outpath):
         os.mkdir(outpath)
     out_basename = os.path.join(outpath, out_name + window_str)
@@ -220,7 +220,7 @@ def run_weighslide(infile: Union[Path, str], window: Union[list, str], statistic
     ax.set_title("weighslide output for window {}{}".format(window_string[:20], dots))
     max_value = max(data_series.max(), output_series.max())
     min_value = min(data_series.min(), output_series.min())
-    ax.set_ylim(min_value*0.8, max_value*1.2)
+    ax.set_ylim(min_value * 0.8, max_value * 1.2)
     lgd = ax.legend()
     plt.tight_layout()
     fig.savefig(out_png, format='png', dpi=200)
@@ -231,6 +231,7 @@ def run_weighslide(infile: Union[Path, str], window: Union[list, str], statistic
     print("\nWeighslide analysis is finished.")
     if len(inpath) > 1:
         print("\nLocation of output files:\n\t{}".format(outpath))
+
 
 def calculate_weighted_windows(data_series, window, statistic, full_output=True):
     """ Apply the weighslide algorithm to an input series.
@@ -384,14 +385,14 @@ def calculate_weighted_windows(data_series, window, statistic, full_output=True)
 parser = argparse.ArgumentParser()
 
 # add command-line options
-parser.add_argument("w", #"--window",
+parser.add_argument("w",  # "--window",
                     help="Sliding weighted window. Can be either a python list "
                          "(e.g. [0.3,1.0,0.3,0,0.3,1.0,0.3,0,0.3,1.0,0.3]), or a list of numbers that will be "
                          "converted to a python list (e.g. 393x393x393), where x represents positions that are ignored"
                          "and 9 represents positions that are most highly weighted.")
-parser.add_argument("s",#"--statistic",
+parser.add_argument("s",  # "--statistic",
                     default="mean",
-                    type=str, choices=["mean","std","sum"],
+                    type=str, choices=["mean", "std", "sum"],
                     help="The choices are mean, std or sum. Desired method to reduce the weighted values in the to a "
                          "single value at the central position.")
 parser.add_argument("-r",  # "--rawdata",
@@ -402,20 +403,20 @@ parser.add_argument("-i",  # "-infile",
                     default=None,
                     help=r'Full path of file containing original data in csv or excel format.'
                          r'E.g. "C:\Path\to\your\file.xlsx"')
-parser.add_argument("-n", #"--name",
+parser.add_argument("-n",  # "--name",
                     default="",
                     help="Name of dataset. Should not be longer than 20 characters. Used in output filenames.")
-parser.add_argument("-c", #"--column",
+parser.add_argument("-c",  # "--column",
                     default=None,
                     help='Column name in input file that should be used for analysis. E.g. "data values"')
 parser.add_argument("-o",  # "--overwrite",
                     type=str, default="False",
                     help='If True, existing files will be overwritten.')
-parser.add_argument("-e", #"--excel_kwargs",
+parser.add_argument("-e",  # "--excel_kwargs",
                     default="None",
                     help="Keyword arguments in python dictionary format to be used when opening "
                          "an excel file using the python pandas module. (E.g. {'sheet_name':'orig_data'}")
-parser.add_argument("-k", #"--csv_kwargs",
+parser.add_argument("-k",  # "--csv_kwargs",
                     default=None,
                     help="Keyword arguments in python dictionary format to be used when opening "
                          "your csv file using the python pandas module. (E.g. {'delimeter':',','header'='infer'}")
