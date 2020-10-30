@@ -112,13 +112,13 @@ df["noisy wave"] = df.wave + df.random*5
 df.plot(title="input data: noisy wave")  
 df.to_csv("wave.csv")  
 ```  
-![Image of input](https://raw.githubusercontent.com/teese/weighslide/master/examples/input.png)  
+![Image of input](https://github.com/teese/weighslide/raw/master/examples/input.png)  
 ```  
 # run weighslide with a window that averages every 6th position  
 window = "9xxxxx9xxxxx9xxxxx9xxxxx9xxxxx9xxxxx9"  
 weighslide.run_weighslide("wave.csv", window, "mean", name="wavetest", column="noisy wave", overwrite=True)  
 ```  
-![Image of output](https://raw.githubusercontent.com/teese/weighslide/master/examples/output.png)  
+![Image of output](https://github.com/teese/weighslide/raw/master/examples/output.png)  
   
   
 **Examples of windows:**  
@@ -148,4 +148,4 @@ Weighslide is free software distributed under the permissive MIT license.
 
 # Contact
 
-![contact details](https://raw.githubusercontent.com/teese/eccpy/master/docs/images/signac_seine_bei_samois.png)
+![contact details](https://github.com/teese/eccpy/raw/develop/docs/images/signac_seine_bei_samois.png)
