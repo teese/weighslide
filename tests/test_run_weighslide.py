@@ -117,10 +117,15 @@ def test_csv_kwargs_are_passed_to_pandas(tmp_path):
     assert (tmp_path / "weighslide_output" / "skip_mean.csv").is_file()
 
 
-def test_no_deprecation_or_future_warnings_are_raised(noisy_wave_csv):
-    """This package sat untouched for years; pandas and numpy deprecations must not pile up again."""
+@pytest.mark.parametrize("window", [WINDOW, [1, 1, "x", 1, 1], [2, 5, 2]], ids=["string", "list_with_x", "list"])
+def test_no_deprecation_or_future_warnings_are_raised(noisy_wave_csv, window):
+    """This package sat untouched for years; pandas and numpy deprecations must not pile up again.
+
+    Parametrised over both window forms: the string and list branches take different code
+    paths, and a deprecation on one of them is invisible when only the other is exercised.
+    """
     with warnings.catch_warnings():
         warnings.simplefilter("error", FutureWarning)
         warnings.simplefilter("error", DeprecationWarning)
         warnings.simplefilter("error", UserWarning)
-        run_weighslide(noisy_wave_csv, WINDOW, "mean", name="wavetest", column="noisy wave")
+        run_weighslide(noisy_wave_csv, window, "mean", name="wavetest", column="noisy wave")

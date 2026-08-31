@@ -242,20 +242,18 @@ def _window_to_array(window: list | str) -> np.ndarray:
     A string window uses a 0-9 shorthand for the weighting, which is shifted and scaled onto
     0.1-1.0. A list window is taken as literal weights.
     """
+    # Built with plain numpy rather than pd.Series.replace, whose downcasting of an
+    # object column is deprecated in pandas 2.2 and warns there.
     if isinstance(window, str):
-        # split into a list of single characters, e.g. "4x4" -> ["4", "x", "4"]
-        window_series = pd.Series(list(window))
-        # replace x with np.nan, then change dtype to float
-        window_series = window_series.replace("x", np.nan).astype(float)
+        # each character is a digit 0-9, or "x" for a position to ignore
+        values = [np.nan if char == "x" else float(char) for char in window]
         # convert 0-9 scale to 1-10, divide by 10 to give a relative weighting
-        window_series = (window_series + 1) / 10
-    elif isinstance(window, list):
-        # replace x with np.nan
-        window_series = pd.Series(window, dtype=object).replace("x", np.nan).astype(float)
-    else:
-        raise TypeError("The input variable 'window' is neither a string nor a list.")
-
-    return np.asarray(window_series, dtype=float)
+        return (np.asarray(values, dtype=float) + 1) / 10
+    if isinstance(window, list):
+        # "x" marks a position to ignore
+        values = [np.nan if isinstance(value, str) and value == "x" else value for value in window]
+        return np.asarray(values, dtype=float)
+    raise TypeError("The input variable 'window' is neither a string nor a list.")
 
 
 def calculate_weighted_windows(data_series, window, statistic, full_output=True):
