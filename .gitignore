@@ -35,3 +35,7 @@ var/
 /weighslide.egg-info/
 
 *__pycache__*
+# ruff / mypy / pytest caches
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
